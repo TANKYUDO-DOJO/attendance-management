@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     QRCode.toDataURL(`http://${ip.address()}:3000/c`, function (err, url) {
         data={
             qr: url.toString(),
-            members: JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'))
+            members: get_data()
         }
         res.render('index', data);
       });
@@ -55,7 +55,7 @@ app.get('/api/attend', (req, res) => {
         fs.writeFileSync(`./data/${date}.json`, '[]');
     }
     //data.jsonを読み込む
-    data = JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'));
+    data = get_data();
 
     //未出席ならば
     if(check_attendance(user, data)){
@@ -107,4 +107,8 @@ check_member = (user) => {
     return false;
 }
     
-
+get_data = () => {
+    date = Date.today().toFormat("YYYY_MM_DD").toString();
+    data = JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'));
+    return data;
+}
