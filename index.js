@@ -9,6 +9,12 @@ const QRCode = require('qrcode');
 const app = express();
 const port = 3000;
 
+date = Date.today().toFormat("YYYY_MM_DD").toString();
+//data.jsonを開く。なければ作る
+if(!fs.existsSync(`./data/${date}.json`)){
+    fs.writeFileSync(`./data/${date}.json`, '[]');
+}
+
 app.set("view engine", "ejs");
 
 app.listen(port, () => {
@@ -31,6 +37,10 @@ app.get('/c', (req, res) => {
 
 app.get('/api/attend', (req, res) => {
     date = Date.today().toFormat("YYYY_MM_DD").toString();
+    //data.jsonを開く。なければ作る
+    if(!fs.existsSync(`./data/${date}.json`)){
+        fs.writeFileSync(`./data/${date}.json`, '[]');
+    }
     //nameパラメータ取得
     user = req.query.name;
     if(user == ""){
@@ -50,10 +60,7 @@ app.get('/api/attend', (req, res) => {
         res.json(payload);
         return
     }
-    //data.jsonを開く。なければ作る
-    if(!fs.existsSync(`./data/${date}.json`)){
-        fs.writeFileSync(`./data/${date}.json`, '[]');
-    }
+    
     //data.jsonを読み込む
     data = get_data();
 
