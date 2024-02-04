@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出席ページ</title>
+</head>
+<body>
+    <form action="/api/attend" method="GET" onsubmit="false">
+        <label for="name">名前(フルネームスペースなし)</label>
+        <br>
+        <input name="name"/>
+        <input type="submit" value="送信"/>
+      </form>
+</body>
+<script>
+    document.querySelector('form').addEventListener('submit', (event) => {
+        event.preventDefault();
+        var name = document.querySelector('input[name="name"]').value;
+        if(name == ""){
+            alert("名前を入力してください");
+            return;
+        }else{
+            //APIを叩いて結果を得る。
+            fetch(`/api/attend?name=${name}`)
+            .then(response => response.json())
+            .then(data => {
+                if(data.status == "noname"){
+                    alert("名前を入力してください");
+                    return;
+                }
+                if(data.status == "nomember"){
+                    alert("名前が間違っています。");
+                    return;
+                }
+                if(data.status == "ok"){
+                    alert("出席しました。");
+                }
+                if(data.status == "already"){
+                    alert("既に出席しています。");
+                }
+        })
+        }});
+</script>
+</html>

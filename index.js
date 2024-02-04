@@ -37,7 +37,7 @@ app.get('/', (req, res) => {
 
 //出席ページ
 app.get('/c', (req, res) => {
-    res.send("")
+    res.render('attend')
 })
 
 //出席API
