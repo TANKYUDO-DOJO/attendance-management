@@ -26,6 +26,14 @@ app.get('/api/attend', (req, res) => {
             "status": "noname"
         }
         res.json(payload);
+        return}
+    if(!check_member(user)){
+        payload = {
+            "name": user,
+            "date": date,
+            "status": "nomember"
+        }
+        res.json(payload);
         return
     }
     //data.jsonを開く。なければ作る
@@ -34,6 +42,8 @@ app.get('/api/attend', (req, res) => {
     }
     //data.jsonを読み込む
     data = JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'));
+
+    //未出席ならば
     if(check_attendance(user, data)){
         payload = {
             "name": user,
@@ -67,6 +77,16 @@ app.get('/api/attend', (req, res) => {
 check_attendance = (user, data) => {
     for(i = 0; i < data.length; i++){
         if(data[i] == user){
+            return true;
+        }
+    }
+    return false;
+}
+
+check_member = (user) => {
+    member_data = JSON.parse(fs.readFileSync('./member.json', 'utf8'));
+    for(i = 0; i < member_data.length; i++){
+        if(member_data[i].name == user){
             return true;
         }
     }
