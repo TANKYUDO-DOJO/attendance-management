@@ -2,6 +2,8 @@ const express = require('express');
 require('date-utils');
 const fs = require('fs');
 const path = require('path');
+const ip = require('ip');
+const QRCode = require('qrcode');
 
 //start server
 const app = express();
@@ -12,7 +14,9 @@ app.listen(port, () => {
 });
 
 app.get('/', (req, res) => {
-  res.send('これは探究道場のメンバーの出席情報を管理するツールです。サーバー側は"/s"を、出席するには"/c"を開いてください。');
+    QRCode.toDataURL(`http://${ip.address()}:3000`, function (err, url) {
+        res.send(`これは探究道場のメンバーの出席情報を管理するツールです。サーバー側は"/s"を、出席するには"/c"を開いてください。<img src="${url}">`);
+      });
 })
 
 app.get('/api/attend', (req, res) => {
