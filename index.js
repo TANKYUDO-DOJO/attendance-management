@@ -5,22 +5,26 @@ const path = require('path');
 const ip = require('ip');
 const QRCode = require('qrcode');
 
-//start server
+//サーバーを立ち上げる
 const app = express();
 const port = 3000;
-
 date = Date.today().toFormat("YYYY_MM_DD").toString();
-//data.jsonを開く。なければ作る
+
+//データファイルが無ければ作る。
 if(!fs.existsSync(`./data/${date}.json`)){
     fs.writeFileSync(`./data/${date}.json`, '[]');
 }
 
+//テンプレートエンジンドをejsに設定
 app.set("view engine", "ejs");
 
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
-date = Date.today().toFormat("YYYY_MM_DD").toString();
+
+//ルーティング
+
+//メインページ
 app.get('/', (req, res) => {
     QRCode.toDataURL(`http://${ip.address()}:3000/c`, function (err, url) {
         data={
@@ -31,10 +35,12 @@ app.get('/', (req, res) => {
       });
 })
 
+//出席ページ
 app.get('/c', (req, res) => {
     res.send("")
 })
 
+//出席API
 app.get('/api/attend', (req, res) => {
     date = Date.today().toFormat("YYYY_MM_DD").toString();
     //data.jsonを開く。なければ作る
@@ -88,13 +94,7 @@ app.get('/api/attend', (req, res) => {
     res.json(payload);}
 })
 
-/**
- * Checks if the given user is present in the data array.
- *
- * @param {any} user - the user to check for presence
- * @param {Array} data - the array to search for the user
- * @return {boolean} true if user is present, false otherwise
- */
+//すでに出席済みか否かを確認
 check_attendance = (user, data) => {
     for(i = 0; i < data.length; i++){
         if(data[i] == user){
@@ -104,6 +104,7 @@ check_attendance = (user, data) => {
     return false;
 }
 
+//名前が存在するか否かを確認
 check_member = (user) => {
     member_data = JSON.parse(fs.readFileSync('./member.json', 'utf8'));
     for(i = 0; i < member_data.length; i++){
@@ -113,7 +114,8 @@ check_member = (user) => {
     }
     return false;
 }
-    
+ 
+//データを取得
 get_data = () => {
     date = Date.today().toFormat("YYYY_MM_DD").toString();
     data = JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'));
