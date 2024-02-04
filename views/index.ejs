@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出席管理ツール</title>
+</head>
+<body>
+    <h1>出席管理ツール</h1>
+    本日の参加者数:<%- members.length %>
+    <h2>QRコード</h2>
+    以下のQRコードをスキャンすると出席できます。<br/>
+    <img src="<%- qr %>" width="300">
+    <h2>参加者一覧</h2>
+    <ul>
+        <% for (let member of members) { %>
+            <li><%- member %></li>
+        <% } %>
+    </ul>
+</body>
+</html>

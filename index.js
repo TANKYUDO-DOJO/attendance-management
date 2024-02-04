@@ -9,14 +9,24 @@ const QRCode = require('qrcode');
 const app = express();
 const port = 3000;
 
+app.set("view engine", "ejs");
+
 app.listen(port, () => {
   console.log(`Server started on port ${port}`);
 });
-
+date = Date.today().toFormat("YYYY_MM_DD").toString();
 app.get('/', (req, res) => {
-    QRCode.toDataURL(`http://${ip.address()}:3000`, function (err, url) {
-        res.send(`これは探究道場のメンバーの出席情報を管理するツールです。サーバー側は"/s"を、出席するには"/c"を開いてください。<img src="${url}">`);
+    QRCode.toDataURL(`http://${ip.address()}:3000/c`, function (err, url) {
+        data={
+            qr: url.toString(),
+            members: JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'))
+        }
+        res.render('index', data);
       });
+})
+
+app.get('/c', (req, res) => {
+    res.send("")
 })
 
 app.get('/api/attend', (req, res) => {
