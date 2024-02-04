@@ -1,5 +1,7 @@
 const express = require('express');
 require('date-utils');
+const fs = require('fs');
+const path = require('path');
 
 //start server
 const app = express();
@@ -16,10 +18,21 @@ app.get('/', (req, res) => {
 app.get('/api/attend', (req, res) => {
     date = Date.today().toFormat("YYYY_MM_DD").toString();
     //nameパラメータ取得
-    name = req.query.name;
+    user = req.query.name;
 
+    //data.jsonを開く。なければ作る
+    if(!fs.existsSync(`./data/${date}.json`)){
+        fs.writeFileSync(`./data/${date}.json`, '[]');
+    }
+    //data.jsonを読み込む
+    data = JSON.parse(fs.readFileSync(`./data/${date}.json`, 'utf8'));
+
+    //dataに追加
+    data.push(user);
+    //書き込み
+    fs.writeFileSync(`./data/${date}.json`, JSON.stringify(data));
     payload= {
-        "name": name,
+        "name": user,
         "date": date,
         "num": 0
     }
